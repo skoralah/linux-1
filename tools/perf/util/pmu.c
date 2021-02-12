@@ -1620,8 +1620,6 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
 			aliases[j].topic = alias->topic;
 			aliases[j].str = alias->str;
 			aliases[j].pmu = pmu->name;
-			aliases[j].metric_expr = alias->metric_expr;
-			aliases[j].metric_name = alias->metric_name;
 			aliases[j].is_cpu = is_cpu;
 			j++;
 		}
@@ -1659,10 +1657,6 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
 			printf("]\n");
 			if (details_flag) {
 				printf("%*s%s/%s/ ", 8, "", aliases[j].pmu, aliases[j].str);
-				if (aliases[j].metric_name)
-					printf(" MetricName: %s", aliases[j].metric_name);
-				if (aliases[j].metric_expr)
-					printf(" MetricExpr: %s", aliases[j].metric_expr);
 				putchar('\n');
 			}
 		} else
