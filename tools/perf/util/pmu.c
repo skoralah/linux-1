@@ -1563,11 +1563,13 @@ bool is_pmu_core(const char *name)
 void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
 			bool long_desc, bool details_flag, bool deprecated)
 {
+	struct pmu_events_map *map = perf_pmu__find_map(NULL);
 	struct perf_pmu *pmu;
+	struct pmu_event *pe;
 	struct perf_pmu_alias *alias;
 	char buf[1024];
 	int printed = 0;
-	int len, j;
+	int len, j, i;
 	struct sevent *aliases;
 	int numdesc = 0;
 	int columns = pager_get_columns();
@@ -1575,6 +1577,23 @@ void print_pmu_events(const char *event_glob, bool name_only, bool quiet_flag,
 
 	pmu = NULL;
 	len = 0;
+
+	for (i = 0; map; i++) {
+		pe = &map->table[i];
+
+		if (!pe->name && !pe->metric_group && !pe->metric_name)
+			break;
+		if (!pe->metric_expr)
+			continue;
+
+		if (strglobmatch_nocase(pe->metric_name, event_glob)) {
+			printf("%s\n%*s%s]", pe->metric_name, 8, "[", pe->desc);
+			if (details_flag)
+				printf("\n%*s%s]", 8, "[", pe->metric_expr);
+			return;
+		}
+	}
+
 	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
 		list_for_each_entry(alias, &pmu->aliases, list)
 			len++;

@@ -119,7 +119,6 @@ int cmd_list(int argc, const char **argv)
 						deprecated);
 			print_tracepoint_events(NULL, s, raw_dump);
 			print_sdt_events(NULL, s, raw_dump);
-			metricgroup__print(true, true, s, raw_dump, details_flag);
 			free(s);
 		}
 	}
